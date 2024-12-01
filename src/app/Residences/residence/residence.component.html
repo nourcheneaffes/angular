@@ -1,0 +1,74 @@
+<h1 class="text-center my-4">Liste des Résidences</h1>
+
+<!-- Input pour la recherche -->
+<div class="mb-4">
+  <input
+    type="text"
+    class="form-control"
+    placeholder="Rechercher par adresse..."
+    [(ngModel)]="searchText"
+  />
+</div>
+
+<!-- Message de confirmation du like -->
+<div *ngIf="likeMessage" class="alert alert-success text-center">
+  {{ likeMessage }}
+</div>
+
+<!-- Résidences filtrées -->
+<div class="container">
+  <div class="row">
+    <!-- Vérification : Affiche un message si aucun résultat -->
+    <div *ngIf="filteredResidences().length === 0" class="col-12">
+      <div class="alert alert-warning text-center">
+        Aucune résidence ne correspond à votre recherche.
+      </div>
+    </div>
+
+    <!-- Boucle sur les résidences filtrées -->
+    <div class="col-md-4 mb-4" *ngFor="let residence of filteredResidences()">
+      <div class="card h-100">
+        <!-- Image -->
+        <img
+          [src]="residence.image"
+          class="card-img-top img-fluid"
+          alt="{{ residence.name }} image"
+          style="height: 200px; object-fit: cover;"
+        />
+
+        <!-- Contenu de la carte -->
+        <div class="card-body">
+          <h5 class="card-title">{{ residence.name }}</h5>
+          <p class="card-text"><small class="text-muted">Adresse : {{ residence.address }}</small></p>
+
+          <!-- Statut avec couleurs -->
+          <div [ngSwitch]="residence.status">
+            <p *ngSwitchCase="'Disponible'" style="color: green;">Disponible</p>
+            <p *ngSwitchCase="'Vendu'" style="color: red;">Vendu</p>
+            <p *ngSwitchCase="'En Construction'" style="color: orange;">En Construction</p>
+          </div>
+
+          <!-- Bouton pour afficher l'adresse -->
+          <div>
+            <button (click)="showLocation(residence)" class="btn btn-primary">
+              Voir l'adresse
+            </button>
+            <span *ngIf="selectedResidence === residence" class="d-block mt-2">
+              {{ residence.address }}
+            </span>
+          </div>
+
+          <!-- Bouton pour liker -->
+          <button class="btn btn-danger mt-3" (click)="addFavoris(residence)">
+            Liker
+          </button>
+
+          <!-- Bouton View Details pour rediriger vers les détails de la résidence -->
+          <button [routerLink]="['/residences', residence.id]" class="btn btn-info mt-3">
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
