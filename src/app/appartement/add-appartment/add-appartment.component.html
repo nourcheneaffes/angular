@@ -1,21 +1,25 @@
 <div class="container p-4 border rounded bg-light">
-  <!-- Titre du formulaire -->
   <h2 class="text-center mb-4">Add New Apartment</h2>
-  <form (ngSubmit)="onAdd()" class="container p-4 border rounded bg-light" [formGroup]="apartForm" >
+  <form (ngSubmit)="onAdd()" [formGroup]="apartForm">
     <div class="row mb-3">
       <label for="apartNum" class="col-sm-3 col-form-label">Apartment Number:</label>
       <div class="col-sm-9">
         <input type="text" id="apartNum" class="form-control" formControlName="apartNum" />
-
+        <div *ngIf="apartForm.get('apartNum')?.invalid && apartForm.get('apartNum')?.touched" class="text-danger">
+          <small *ngIf="apartForm.get('apartNum')?.errors?.['required']">Apartment Number is required.</small>
+          <small *ngIf="apartForm.get('apartNum')?.errors?.['pattern']">Must be a valid number.</small>
+        </div>
       </div>
     </div>
-
 
     <div class="row mb-3">
       <label for="floorNum" class="col-sm-3 col-form-label">Floor Number:</label>
       <div class="col-sm-9">
         <input type="text" id="floorNum" class="form-control" formControlName="floorNum" />
-
+        <div *ngIf="apartForm.get('floorNum')?.invalid && apartForm.get('floorNum')?.touched" class="text-danger">
+          <small *ngIf="apartForm.get('floorNum')?.errors?.['required']">Floor Number is required.</small>
+          <small *ngIf="apartForm.get('floorNum')?.errors?.['pattern']">Must be a valid number.</small>
+        </div>
       </div>
     </div>
 
@@ -23,7 +27,7 @@
       <label for="surface" class="col-sm-3 col-form-label">Surface:</label>
       <div class="col-sm-9">
         <input type="text" id="surface" class="form-control" formControlName="surface" />
-        <div *ngIf="apartForm.get('surface')?.invalid && apartForm.get('surface')?.touched" class="text-danger mt-1">
+        <div *ngIf="apartForm.get('surface')?.invalid && apartForm.get('surface')?.touched" class="text-danger">
           <small>Surface is required.</small>
         </div>
       </div>
@@ -40,6 +44,9 @@
           <input type="radio" id="terraceNo" value="no" formControlName="terrace" class="form-check-input" />
           <label for="terraceNo" class="form-check-label">No</label>
         </div>
+        <div *ngIf="apartForm.get('terrace')?.invalid && apartForm.get('terrace')?.touched" class="text-danger">
+          <small>Terrace selection is required.</small>
+        </div>
       </div>
     </div>
 
@@ -47,28 +54,25 @@
       <label for="surfaceTerrace" class="col-sm-3 col-form-label">Surface Terrace:</label>
       <div class="col-sm-9">
         <input type="text" id="surfaceTerrace" class="form-control" formControlName="surfaceTerrace" />
-
+        <div *ngIf="apartForm.get('surfaceTerrace')?.invalid && apartForm.get('surfaceTerrace')?.touched" class="text-danger">
+          <small>Surface Terrace is required if terrace is selected.</small>
+        </div>
       </div>
     </div>
-
 
     <div class="row mb-3">
       <label class="col-sm-3 col-form-label">Category:</label>
       <div class="col-sm-9">
-        <div class="form-check">
-          <input type="radio" id="categoryS1" value="S+1" formControlName="category" class="form-check-input" />
-          <label for="categoryS1" class="form-check-label">S+1</label>
+        <div *ngFor="let option of ['S+1', 'S+2', 'S+3']; let i = index" class="form-check">
+          <input type="radio" [id]="'category' + i" [value]="option" formControlName="category" class="form-check-input" />
+          <label [for]="'category' + i" class="form-check-label">{{ option }}</label>
         </div>
-        <div class="form-check">
-          <input type="radio" id="categoryS2" value="S+2" formControlName="category" class="form-check-input" />
-          <label for="categoryS2" class="form-check-label">S+2</label>
-        </div>
-        <div class="form-check">
-          <input type="radio" id="categoryS3" value="S+3" formControlName="category" class="form-check-input" />
-          <label for="categoryS3" class="form-check-label">S+3</label>
+        <div *ngIf="apartForm.get('category')?.invalid && apartForm.get('category')?.touched" class="text-danger">
+          <small>Category selection is required.</small>
         </div>
       </div>
     </div>
+
     <div class="mb-3">
       <label for="residence" class="form-label">Residence:</label>
       <select id="residence" class="form-select" formControlName="residence">
@@ -77,67 +81,15 @@
         </option>
       </select>
       <div *ngIf="apartForm.get('residence')?.invalid && apartForm.get('residence')?.touched" class="text-danger">
-        <small>Residence is required.</small>
+        <small>Residence selection is required.</small>
       </div>
     </div>
-
 
     <div class="row">
       <div class="col text-center">
         <button type="submit" class="btn btn-primary me-2" [disabled]="apartForm.invalid">Add</button>
-        <button type="button" class="btn btn-secondary">Reset</button>
+        <button type="button" class="btn btn-secondary" (click)="onReset()">Reset</button>
       </div>
     </div>
   </form>
 </div>
-
-
-
-
-
-<!-- <form [formGroup]="apartForm">
-  <div>
-    <label>Apartment Number:</label>
-    <input type="text" formControlName="apartNum" />
-  </div>
-
-  <div>
-    <label>Floor Number:</label>
-    <input type="text" formControlName="floorNum" />
-  </div>
-
-  <div>
-    <label>Surface:</label>
-    <input type="text" formControlName="surface" />
-  </div>
-
-  <div>
-    <label>Terrace:</label>
-    <div>
-      <label><input type="radio" formControlName="terrace" value="yes" /> Yes</label>
-      <label><input type="radio" formControlName="terrace" value="no" /> No</label>
-    </div>
-  </div>
-
-  <div>
-    <label>Surface Terrace:</label>
-    <input type="text" formControlName="surfaceTerrace" />
-  </div>
-
-  <div>
-    <label>Category:</label>
-    <div>
-      <label><input type="radio" formControlName="category" value="S+1" /> S+1</label>
-      <label><input type="radio" formControlName="category" value="S+2" /> S+2</label>
-      <label><input type="radio" formControlName="category" value="S+3" /> S+3</label>
-    </div>
-  </div>
-<!--  -->
-<!-- <div>
-    <label>Residence:</label>
-
-    </div>
-
-  <button type="submit">Add</button>
-  <button type="button">Reset</button>
-</form> --> -->
