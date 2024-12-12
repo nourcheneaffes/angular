@@ -10,15 +10,32 @@ import { ApartmentsByResidenceComponent } from './apartments/apartments-by-resid
 import { AddApartmentComponent } from './apartments/add-apartment/add-apartment.component';
 
 const routes: Routes = [
+  // Page d'accueil
   { path: 'home', component: HomeComponent },
+
+  // Liste des résidences
   { path: 'residence', component: ResidenceComponent },
+
+  // Détails d'une résidence spécifique (avec un paramètre id)
   { path: 'residences/:id', component: ResidenceDetailsComponent },
+
+  // Ajouter une nouvelle résidence
   { path: 'add-residence', component: AddResidenceComponent },
-  { path: 'apartments', component: ApartmentsComponent }, // Liste des appartements
-  { path: 'residences/:id/apartments', component: ApartmentsByResidenceComponent }, // Appartements d'une résidence
-  { path: 'add-apartment', component: AddApartmentComponent }, // Ajouter un appartement
+
+  // Liste des appartements (page principale des appartements)
+  { path: 'apartments', component: ApartmentsComponent },
+
+  // Liste des appartements d'une résidence spécifique (avec un paramètre id)
+  { path: 'residences/:id/apartments', component: ApartmentsByResidenceComponent },
+
+  // Ajouter un nouvel appartement
+  { path: 'add-apartment', component: AddApartmentComponent },
+
+  // Redirection vers la page d'accueil par défaut
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: '**', component: NotFoundComponent },
+
+  // Route pour les pages non trouvées
+  { path: '**', component: NotFoundComponent }
 ];
 
 @NgModule({

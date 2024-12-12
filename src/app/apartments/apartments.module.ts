@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ApartmentsComponent } from './apartments/apartments.component';
 import { ApartmentsByResidenceComponent } from './apartments-by-residence/apartments-by-residence.component';
 import { AddApartmentComponent } from './add-apartment/add-apartment.component';
+import { ApartmentsRoutingModule } from './apartments-routing.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -13,7 +15,10 @@ import { AddApartmentComponent } from './add-apartment/add-apartment.component';
     AddApartmentComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    ApartmentsRoutingModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class ApartmentsModule { }
