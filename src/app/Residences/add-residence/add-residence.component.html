@@ -1,1 +1,125 @@
-<p>add-residence works!</p>
+<div class="container mt-4">
+  <div class="notification" *ngIf="showNotification" [ngClass]="notificationType">
+    {{ notificationMessage }}
+  </div>
+
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h2>Gestion des Résidences</h2>
+    </div>
+    <div class="card-body">
+      <!-- Liste des résidences existantes -->
+      <div class="mb-4">
+        <h3>Résidences existantes</h3>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Adresse</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let residence of residences">
+                <td>{{ residence.name }}</td>
+                <td>{{ residence.address }}</td>
+                <td>
+                  <span class="badge" [ngClass]="{
+                    'bg-success': residence.status === 'Disponible',
+                    'bg-danger': residence.status === 'Vendu',
+                    'bg-warning': residence.status === 'En Construction'
+                  }">{{ residence.status }}</span>
+                </td>
+                <td>
+                  <button class="btn btn-warning btn-sm me-2" (click)="editResidence(residence)">
+                    <i class="fas fa-edit"></i> Modifier
+                  </button>
+                  <button class="btn btn-danger btn-sm" (click)="deleteResidence(residence)">
+                    <i class="fas fa-trash"></i> Supprimer
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Formulaire d'ajout/modification -->
+      <h3>{{ isEditing ? 'Modifier la résidence' : 'Ajouter une résidence' }}</h3>
+      <form [formGroup]="residenceForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="name" class="form-label">Nom de la résidence</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="name" 
+            formControlName="name"
+            [ngClass]="{'is-invalid': residenceForm.get('name')?.invalid && residenceForm.get('name')?.touched}"
+          >
+          <div class="invalid-feedback" *ngIf="residenceForm.get('name')?.errors?.['required']">
+            Le nom est requis
+          </div>
+          <div class="invalid-feedback" *ngIf="residenceForm.get('name')?.errors?.['minlength']">
+            Le nom doit contenir au moins 3 caractères
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="address" class="form-label">Adresse</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="address" 
+            formControlName="address"
+            [ngClass]="{'is-invalid': residenceForm.get('address')?.invalid && residenceForm.get('address')?.touched}"
+          >
+          <div class="invalid-feedback">
+            L'adresse est requise
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="image" class="form-label">URL de l'image</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="image" 
+            formControlName="image"
+          >
+        </div>
+
+        <div class="mb-3">
+          <label for="status" class="form-label">Statut</label>
+          <select 
+            class="form-select" 
+            id="status" 
+            formControlName="status"
+          >
+            <option value="Disponible">Disponible</option>
+            <option value="En Construction">En Construction</option>
+            <option value="Vendu">Vendu</option>
+          </select>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="residenceForm.invalid"
+          >
+            {{ isEditing ? 'Modifier' : 'Ajouter' }}
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-secondary"
+            (click)="onReset()"
+          >
+            {{ isEditing ? 'Annuler' : 'Réinitialiser' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

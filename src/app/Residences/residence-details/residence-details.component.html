@@ -1,5 +1,31 @@
-<div>
-    <h1>Details of Residence {{ residenceId }} {{ residenceName }}</h1>
+<div class="container">
+  <h1>Details of Residence {{ residenceId }}</h1>
+  
+  <div class="apartments-list">
+    <h2>Apartments in this Residence</h2>
     
+    <div *ngIf="apartments.length === 0" class="alert alert-info">
+      No apartments found in this residence.
+    </div>
+
+    <div class="row">
+      <div *ngFor="let apartment of apartments" class="col-md-4 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Apartment {{ apartment.apartNum }}</h5>
+            <p class="card-text">
+              <strong>Floor:</strong> {{ apartment.floorNum }}<br>
+              <strong>Surface:</strong> {{ apartment.surface }} m²<br>
+              <strong>Category:</strong> {{ apartment.category }}<br>
+              <strong>Terrace:</strong> {{ apartment.terrace }}
+              <span *ngIf="apartment.terrace === 'yes'">
+                ({{ apartment.surfaceTerrace }} m²)
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
   

@@ -1,0 +1,28 @@
+.card {
+  transition: transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.badge {
+  font-size: 0.9em;
+  padding: 8px 12px;
+}
+
+.apartments-info {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.categories {
+  color: #666;
+}
+
+.btn-sm {
+  flex: 1;
+}

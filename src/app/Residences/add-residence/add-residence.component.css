@@ -1,0 +1,45 @@
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 4px;
+  color: white;
+  animation: slideIn 0.5s ease-in-out;
+  z-index: 1000;
+}
+
+.success {
+  background-color: #4CAF50;
+}
+
+.error {
+  background-color: #f44336;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.card {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+.invalid-feedback {
+  display: block;
+}
+
+.btn {
+  min-width: 120px;
+}

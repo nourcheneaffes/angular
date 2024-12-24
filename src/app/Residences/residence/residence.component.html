@@ -1,74 +1,108 @@
-<h1 class="text-center my-4">Liste des Résidences</h1>
+<div class="container mt-4">
+  <h1 class="text-center mb-4">Liste des Résidences</h1>
 
-<!-- Input pour la recherche -->
-<div class="mb-4">
-  <input
-    type="text"
-    class="form-control"
-    placeholder="Rechercher par adresse..."
-    [(ngModel)]="searchText"
-  />
-</div>
-
-<!-- Message de confirmation du like -->
-<div *ngIf="likeMessage" class="alert alert-success text-center">
-  {{ likeMessage }}
-</div>
-
-<!-- Résidences filtrées -->
-<div class="container">
-  <div class="row">
-    <!-- Vérification : Affiche un message si aucun résultat -->
-    <div *ngIf="filteredResidences().length === 0" class="col-12">
-      <div class="alert alert-warning text-center">
-        Aucune résidence ne correspond à votre recherche.
+  <!-- Barre de recherche et boutons d'ajout -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Barre de recherche -->
+    <div class="search-box" style="width: 300px;">
+      <div class="input-group">
+        <span class="input-group-text">
+          <i class="fas fa-search"></i>
+        </span>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Rechercher une résidence..."
+          [(ngModel)]="searchText"
+          name="search"
+        >
       </div>
     </div>
 
-    <!-- Boucle sur les résidences filtrées -->
+    <!-- Bouton d'ajout -->
+    <button class="btn btn-success" routerLink="/add-residence">
+      <i class="fas fa-plus"></i> Ajouter une Résidence
+    </button>
+  </div>
+
+  <!-- Résidences filtrées -->
+  <div class="row">
     <div class="col-md-4 mb-4" *ngFor="let residence of filteredResidences()">
       <div class="card h-100">
         <!-- Image -->
-        <img
-          [src]="residence.image"
-          class="card-img-top img-fluid"
-          alt="{{ residence.name }} image"
-          style="height: 200px; object-fit: cover;"
-        />
+        <img [src]="residence.image" class="card-img-top" alt="{{ residence.name }}"
+          style="height: 200px; object-fit: cover;">
 
-        <!-- Contenu de la carte -->
         <div class="card-body">
           <h5 class="card-title">{{ residence.name }}</h5>
           <p class="card-text"><small class="text-muted">Adresse : {{ residence.address }}</small></p>
 
-          <!-- Statut avec couleurs -->
-          <div [ngSwitch]="residence.status">
-            <p *ngSwitchCase="'Disponible'" style="color: green;">Disponible</p>
-            <p *ngSwitchCase="'Vendu'" style="color: red;">Vendu</p>
-            <p *ngSwitchCase="'En Construction'" style="color: orange;">En Construction</p>
+          <!-- Statut avec badge coloré -->
+          <div class="mb-3">
+            <span class="badge" [ngClass]="{
+              'bg-success': residence.status === 'Disponible',
+              'bg-danger': residence.status === 'Vendu',
+              'bg-warning': residence.status === 'En Construction'
+            }">{{ residence.status }}</span>
           </div>
 
-          <!-- Bouton pour afficher l'adresse -->
-          <div>
-            <button (click)="showLocation(residence)" class="btn btn-primary">
-              Voir l'adresse
+          <!-- Boutons d'action -->
+          <div class="d-flex gap-2 mb-3">
+            <button class="btn btn-warning btn-sm" (click)="editResidence(residence)">
+              <i class="fas fa-edit"></i> Modifier
             </button>
-            <span *ngIf="selectedResidence === residence" class="d-block mt-2">
-              {{ residence.address }}
-            </span>
+            <button class="btn btn-danger btn-sm" (click)="deleteResidence(residence)">
+              <i class="fas fa-trash"></i> Supprimer
+            </button>
           </div>
 
-          <!-- Bouton pour liker -->
-          <button class="btn btn-danger mt-3" (click)="addFavoris(residence)">
-            Liker
-          </button>
-
-          <!-- Bouton View Details pour rediriger vers les détails de la résidence -->
-          <button [routerLink]="['/residences', residence.id]" class="btn btn-info mt-3">
-            View Details
+          <!-- Bouton pour voir les détails -->
+          <button class="btn btn-primary w-100" [routerLink]="['/residences', residence.id]">
+            Voir détails
           </button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Modal de modification -->
+<div class="modal" [class.show]="showEditModal" [style.display]="showEditModal ? 'block' : 'none'">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modifier la résidence</h5>
+        <button type="button" class="btn-close" (click)="closeEditModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="editForm" *ngIf="editForm">
+          <div class="mb-3">
+            <label class="form-label">Nom</label>
+            <input type="text" class="form-control" formControlName="name">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Adresse</label>
+            <input type="text" class="form-control" formControlName="address">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Image URL</label>
+            <input type="text" class="form-control" formControlName="image">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Statut</label>
+            <select class="form-select" formControlName="status">
+              <option value="Disponible">Disponible</option>
+              <option value="Vendu">Vendu</option>
+              <option value="En Construction">En Construction</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeEditModal()">Annuler</button>
+        <button type="button" class="btn btn-primary" (click)="saveEditedResidence()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade show" *ngIf="showEditModal"></div>

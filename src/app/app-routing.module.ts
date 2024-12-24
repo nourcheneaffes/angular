@@ -8,10 +8,12 @@ import { AddResidenceComponent } from './Residences/add-residence/add-residence.
 import { ApartmentsComponent } from './apartments/apartments/apartments.component';
 import { ApartmentsByResidenceComponent } from './apartments/apartments-by-residence/apartments-by-residence.component';
 import { AddApartmentComponent } from './apartments/add-apartment/add-apartment.component';
-
+import { UserComponent } from './user/user.component';
 const routes: Routes = [
   // Page d'accueil
   { path: 'home', component: HomeComponent },
+  { path: "adduser", component: UserComponent },
+  { path: 'user', component: UserComponent },
 
   // Liste des résidences
   { path: 'residence', component: ResidenceComponent },
@@ -43,3 +45,4 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
+ 

@@ -1,0 +1,29 @@
+<div class="notification" *ngIf="showNotification" [ngClass]="notificationType">
+  {{ notificationMessage }}
+</div>
+
+<form [formGroup]="userForm" (ngSubmit)="addUser()" class="user-form">
+  <div class="form-group">
+    <label for="username">Username:</label>
+    <input type="text" id="username" formControlName="username">
+    <div class="error" style="color: red;" *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched">
+      Username is required.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email:</label>
+    <input type="email" id="email" formControlName="email">
+    <div class="error" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+      <span style="color: rgb(255, 170, 0);" *ngIf="userForm.get('email')?.errors?.['required']">
+        Email is required
+      </span>
+      <span style="color: rgb(119, 55, 55);" *ngIf="userForm.get('email')?.errors?.['email']">
+        Email format is invalid
+      </span>
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="userForm.invalid">Save</button>
+</form>
+  

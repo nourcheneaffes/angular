@@ -1,5 +1,82 @@
-<div *ngFor="let residence of residences; let i = index">
-  <h3>{{ residence.name }}</h3>
-  <p>{{ residence.description }}</p>
-  <button [routerLink]="['/Residences', residence.id]">View Details</button>
+<div class="container mt-4">
+  <h1 class="text-center mb-4">
+    Bienvenue {{ userName }} dans notre application de gestion immobilière
+  </h1>
+
+  <!-- Barre de recherche et boutons d'ajout -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Barre de recherche -->
+    <div class="search-box" style="width: 300px;">
+      <div class="input-group">
+        <span class="input-group-text">
+          <i class="fas fa-search"></i>
+        </span>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Rechercher une résidence..."
+          [(ngModel)]="searchText"
+          name="search"
+        >
+      </div>
+    </div>
+
+    <!-- Boutons d'ajout -->
+    <div class="btn-group">
+      <button class="btn btn-success me-2" routerLink="/add-residence">
+        <i class="fas fa-building"></i> Ajouter une Résidence
+      </button>
+      <button class="btn btn-success" routerLink="/add-apartment">
+        <i class="fas fa-plus"></i> Ajouter un Appartement
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-4" *ngFor="let residence of filteredResidences()">
+      <div class="card h-100">
+        <!-- Image de la résidence -->
+        <img [src]="residence.image" class="card-img-top" alt="{{ residence.name }}"
+          style="height: 200px; object-fit: cover;">
+        
+        <div class="card-body">
+          <h5 class="card-title">{{ residence.name }}</h5>
+          <p class="card-text">
+            <strong>Adresse:</strong> {{ residence.address }}
+          </p>
+          
+          <!-- Statut avec badge coloré -->
+          <div class="mb-3">
+            <span class="badge" [ngClass]="{
+              'bg-success': residence.status === 'Disponible',
+              'bg-danger': residence.status === 'Vendu',
+              'bg-warning': residence.status === 'En Construction'
+            }">{{ residence.status }}</span>
+          </div>
+
+          <!-- Détails des appartements -->
+          <div class="apartments-info">
+            <h6>Appartements:</h6>
+            <p class="mb-2">
+              Nombre total: {{ getApartmentsCount(residence.id) }}
+            </p>
+            <div class="categories mb-3" *ngIf="getApartmentsCount(residence.id) > 0">
+              <small>
+                S+1: {{ getApartmentsByCategory(residence.id, 'S+1') }}<br>
+                S+2: {{ getApartmentsByCategory(residence.id, 'S+2') }}<br>
+                S+3: {{ getApartmentsByCategory(residence.id, 'S+3') }}
+              </small>
+            </div>
+          </div>
+
+          <!-- Un seul bouton pour voir les détails -->
+          <div class="text-center">
+            <button class="btn btn-primary" [routerLink]="['/residences', residence.id]">
+              Voir détails
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

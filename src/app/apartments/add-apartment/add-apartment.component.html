@@ -1,70 +1,126 @@
-<div class="container">
-    <h2>Ajouter un Appartement</h2>
-    <form [formGroup]="apartForm" (ngSubmit)="onAdd()">
-      <div class="form-group">
-        <label for="apartNum">Numéro d'appartement</label>
-        <input type="text" id="apartNum" formControlName="apartNum" class="form-control" />
-        <div *ngIf="apartForm.get('apartNum')?.invalid && apartForm.get('apartNum')?.touched" class="text-danger">
-          <small *ngIf="apartForm.get('apartNum')?.errors?.['required']">Le numéro d'appartement est requis.</small>
-          <small *ngIf="apartForm.get('apartNum')?.errors?.['pattern']">Le numéro d'appartement doit être un nombre valide.</small>
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h2>Gestion des Appartements</h2>
+    </div>
+    <div class="card-body">
+      <!-- Liste des appartements existants -->
+      <div class="mb-4">
+        <h3>Appartements existants</h3>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>N° Appart</th>
+                <th>Étage</th>
+                <th>Surface</th>
+                <th>Catégorie</th>
+                <th>Résidence</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let apartment of apartments">
+                <td>{{ apartment.apartNum }}</td>
+                <td>{{ apartment.floorNum }}</td>
+                <td>{{ apartment.surface }} m²</td>
+                <td>{{ apartment.category }}</td>
+                <td>{{ getResidenceName(apartment.residence) }}</td>
+                <td>
+                  <button class="btn btn-warning btn-sm me-2" (click)="editApartment(apartment)">
+                    <i class="fas fa-edit"></i> Modifier
+                  </button>
+                  <button class="btn btn-danger btn-sm" (click)="deleteApartment(apartment)">
+                    <i class="fas fa-trash"></i> Supprimer
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-  
-      <div class="form-group">
-        <label for="floorNum">Numéro d'étage</label>
-        <input type="text" id="floorNum" formControlName="floorNum" class="form-control" />
-        <div *ngIf="apartForm.get('floorNum')?.invalid && apartForm.get('floorNum')?.touched" class="text-danger">
-          <small *ngIf="apartForm.get('floorNum')?.errors?.['required']">Le numéro d'étage est requis.</small>
-          <small *ngIf="apartForm.get('floorNum')?.errors?.['pattern']">Le numéro d'étage doit être un nombre valide.</small>
+
+      <!-- Formulaire d'ajout/modification -->
+      <h3>{{ isEditing ? 'Modifier l\'appartement' : 'Ajouter un appartement' }}</h3>
+      <form [formGroup]="apartForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group mb-3">
+              <label for="apartNum">Numéro d'appartement</label>
+              <input type="text" id="apartNum" formControlName="apartNum" class="form-control" />
+              <div *ngIf="apartForm.get('apartNum')?.invalid && apartForm.get('apartNum')?.touched" class="text-danger">
+                <small *ngIf="apartForm.get('apartNum')?.errors?.['required']">Le numéro d'appartement est requis.</small>
+                <small *ngIf="apartForm.get('apartNum')?.errors?.['pattern']">Le numéro d'appartement doit être un nombre valide.</small>
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="floorNum">Numéro d'étage</label>
+              <input type="text" id="floorNum" formControlName="floorNum" class="form-control" />
+              <div *ngIf="apartForm.get('floorNum')?.invalid && apartForm.get('floorNum')?.touched" class="text-danger">
+                <small *ngIf="apartForm.get('floorNum')?.errors?.['required']">Le numéro d'étage est requis.</small>
+                <small *ngIf="apartForm.get('floorNum')?.errors?.['pattern']">Le numéro d'étage doit être un nombre valide.</small>
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="surface">Surface de l'appartement</label>
+              <input type="text" id="surface" formControlName="surface" class="form-control" />
+              <div *ngIf="apartForm.get('surface')?.invalid && apartForm.get('surface')?.touched" class="text-danger">
+                <small *ngIf="apartForm.get('surface')?.errors?.['required']">La surface est requise.</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group mb-3">
+              <label for="terrace">Terrasse</label>
+              <select id="terrace" formControlName="terrace" class="form-control">
+                <option value="yes">Oui</option>
+                <option value="no">Non</option>
+              </select>
+            </div>
+
+            <div class="form-group mb-3" *ngIf="apartForm.get('terrace')?.value === 'yes'">
+              <label for="surfaceTerrace">Surface de la terrasse</label>
+              <input type="text" id="surfaceTerrace" formControlName="surfaceTerrace" class="form-control" />
+              <div *ngIf="apartForm.get('surfaceTerrace')?.invalid && apartForm.get('surfaceTerrace')?.touched" class="text-danger">
+                <small *ngIf="apartForm.get('surfaceTerrace')?.errors?.['required']">La surface de la terrasse est requise.</small>
+                <small *ngIf="apartForm.get('surfaceTerrace')?.errors?.['pattern']">La surface de la terrasse doit être un nombre valide.</small>
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="category">Catégorie</label>
+              <select id="category" formControlName="category" class="form-control">
+                <option value="S+1">S+1</option>
+                <option value="S+2">S+2</option>
+                <option value="S+3">S+3</option>
+              </select>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="residence">Résidence</label>
+              <select id="residence" formControlName="residence" class="form-control">
+                <option *ngFor="let residence of residences" [value]="residence.id">{{ residence.name }}</option>
+              </select>
+              <div *ngIf="apartForm.get('residence')?.invalid && apartForm.get('residence')?.touched" class="text-danger">
+                <small *ngIf="apartForm.get('residence')?.errors?.['required']">La résidence est requise.</small>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-  
-      <div class="form-group">
-        <label for="surface">Surface de l'appartement</label>
-        <input type="text" id="surface" formControlName="surface" class="form-control" />
-        <div *ngIf="apartForm.get('surface')?.invalid && apartForm.get('surface')?.touched" class="text-danger">
-          <small *ngIf="apartForm.get('surface')?.errors?.['required']">La surface est requise.</small>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary" [disabled]="apartForm.invalid">
+            {{ isEditing ? 'Modifier' : 'Ajouter' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="onReset()">
+            {{ isEditing ? 'Annuler' : 'Réinitialiser' }}
+          </button>
         </div>
-      </div>
-  
-      <div class="form-group">
-        <label for="terrace">Terrasse</label>
-        <select id="terrace" formControlName="terrace" class="form-control">
-          <option value="yes">Oui</option>
-          <option value="no">Non</option>
-        </select>
-      </div>
-  
-      <div class="form-group" *ngIf="apartForm.get('terrace')?.value === 'yes'">
-        <label for="surfaceTerrace">Surface de la terrasse</label>
-        <input type="text" id="surfaceTerrace" formControlName="surfaceTerrace" class="form-control" />
-        <div *ngIf="apartForm.get('surfaceTerrace')?.invalid && apartForm.get('surfaceTerrace')?.touched" class="text-danger">
-          <small *ngIf="apartForm.get('surfaceTerrace')?.errors?.['required']">La surface de la terrasse est requise.</small>
-          <small *ngIf="apartForm.get('surfaceTerrace')?.errors?.['pattern']">La surface de la terrasse doit être un nombre valide.</small>
-        </div>
-      </div>
-  
-      <div class="form-group">
-        <label for="category">Catégorie</label>
-        <select id="category" formControlName="category" class="form-control">
-          <option value="S+1">S+1</option>
-          <option value="S+2">S+2</option>
-          <option value="S+3">S+3</option>
-        </select>
-      </div>
-  
-      <div class="form-group">
-        <label for="residence">Résidence</label>
-        <select id="residence" formControlName="residence" class="form-control">
-          <option *ngFor="let residence of residences" [value]="residence.id">{{ residence.name }}</option>
-        </select>
-        <div *ngIf="apartForm.get('residence')?.invalid && apartForm.get('residence')?.touched" class="text-danger">
-          <small *ngIf="apartForm.get('residence')?.errors?.['required']">La résidence est requise.</small>
-        </div>
-      </div>
-  
-      <button type="submit" class="btn btn-primary" [disabled]="apartForm.invalid">Ajouter l'appartement</button>
-      <button type="button" class="btn btn-secondary" (click)="onReset()">Réinitialiser</button>
-    </form>
+      </form>
+    </div>
   </div>
+</div>
   

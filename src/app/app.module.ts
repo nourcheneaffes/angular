@@ -11,6 +11,8 @@ import { ResidenceComponent } from './Residences/residence/residence.component';
 import { ResidenceDetailsComponent } from './Residences/residence-details/residence-details.component';
 import { AddResidenceComponent } from './Residences/add-residence/add-residence.component';
 import { HeaderComponent } from './header/header.component'; // Path to HeaderComponent
+import { UserComponent } from './user/user.component';
+
 
 @NgModule({
   declarations: [
@@ -21,7 +23,7 @@ import { HeaderComponent } from './header/header.component'; // Path to HeaderCo
     ResidenceComponent,
     ResidenceDetailsComponent,
     AddResidenceComponent,
-    // Remove any ApartmentsComponent declarations if present to avoid duplicate declarations
+    UserComponent
   ],
   imports: [
     BrowserModule,
