@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Residence } from '../core/models/residence.interface';
 import { Apartment } from '../core/models/apartment.interface';
-
-
+import { ResidenceService } from '../services/residence.service';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +13,8 @@ export class HomeComponent implements OnInit {
   apartments: Apartment[] = [];
   searchText: string = '';
   userName: string = '';
+
+  constructor(private residenceService: ResidenceService) {}
 
   ngOnInit() {
     this.loadResidences();
@@ -30,10 +31,9 @@ export class HomeComponent implements OnInit {
   }
 
   loadResidences() {
-    const storedResidences = localStorage.getItem('residences');
-    if (storedResidences) {
-      this.residences = JSON.parse(storedResidences);
-    }
+    this.residenceService.getAllResidences().subscribe(residences => {
+      this.residences = residences;
+    });
   }
 
   loadApartments() {

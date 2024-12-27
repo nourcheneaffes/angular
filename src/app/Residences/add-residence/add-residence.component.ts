@@ -89,7 +89,7 @@ export class AddResidenceComponent implements OnInit {
 
       setTimeout(() => {
         this.showNotification = false;
-        this.router.navigate(['/residence']);
+        this.router.navigate(['/home']);
       }, 2000);
     }
   }
