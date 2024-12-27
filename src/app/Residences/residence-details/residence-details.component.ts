@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Apartment } from '../../shared/models/apartment.interface';
+import { Apartment } from '../../core/models/apartment.interface';
+import { Residence } from '../../core/models/residence.interface';
 
 @Component({
   selector: 'app-residence-details',

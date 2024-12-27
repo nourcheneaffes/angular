@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 interface User {
   username: string;
@@ -10,39 +10,28 @@ interface User {
   providedIn: 'root'
 })
 export class UserService {
-  private currentUser = new BehaviorSubject<User | null>(null);
+  private currentUser = new BehaviorSubject<User | null>(this.loadUser());
 
-  constructor() {
-    this.loadUser();
-  }
-
-  private loadUser() {
+  private static loadUser(): User | null {
     const stored = localStorage.getItem('userData');
-    if (stored) {
-      this.currentUser.next(JSON.parse(stored));
-    }
+    return stored ? JSON.parse(stored) : null;
   }
 
-  getCurrentUser(): Observable<User | null> {
+  getCurrentUser() {
     return this.currentUser.asObservable();
   }
 
-  saveUser(user: User): void {
+  saveUser(user: User) {
     localStorage.setItem('userData', JSON.stringify(user));
     this.currentUser.next(user);
   }
 
-  updateUser(user: User): void {
-    localStorage.setItem('userData', JSON.stringify(user));
-    this.currentUser.next(user);
-  }
-
-  logout(): void {
+  logout() {
     localStorage.removeItem('userData');
     this.currentUser.next(null);
   }
 
-  isLoggedIn(): boolean {
+  isLoggedIn() {
     return this.currentUser.value !== null;
   }
 } 

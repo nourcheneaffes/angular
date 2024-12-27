@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Residence } from '../../shared/models/residence.interface';
+
 import { ResidenceService } from '../../services/residence.service';
 import { ApartmentService } from '../../services/apartment.service';
+import { Residence } from 'src/app/core/models/residence.interface';
 
 @Component({
   selector: 'app-add-residence',

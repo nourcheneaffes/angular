@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Residence } from '../shared/models/residence.interface';
-import { Apartment } from '../shared/models/apartment.interface';
+import { Residence } from '../core/models/residence.interface';
+import { Apartment } from '../core/models/apartment.interface';
+
+
 
 @Component({
   selector: 'app-home',

@@ -1,64 +1,45 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Apartment } from '../shared/models/apartment.interface';
+import { BehaviorSubject } from 'rxjs';
+import { Apartment } from '../core/models/apartment.interface';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApartmentService {
-  private apartments = new BehaviorSubject<Apartment[]>([]);
+  private apartments = new BehaviorSubject<Apartment[]>(ApartmentService.loadApartments());
 
-  constructor() {
-    this.loadInitialData();
-  }
-
-  private loadInitialData() {
+  private static loadApartments(): Apartment[] {
     const stored = localStorage.getItem('apartments');
-    if (stored) {
-      this.apartments.next(JSON.parse(stored));
-    }
+    return stored ? JSON.parse(stored) : [];
   }
 
-  getAllApartments(): Observable<Apartment[]> {
+  getAllApartments() {
     return this.apartments.asObservable();
   }
 
-  getApartmentsByResidence(residenceId: number): Observable<Apartment[]> {
-    return new Observable(observer => {
-      this.apartments.subscribe(apartments => {
-        observer.next(apartments.filter(apt => apt.residence === residenceId));
-      });
-    });
+  addApartment(apartment: Apartment) {
+    const current = this.apartments.value;
+    this.apartments.next([...current, apartment]);
+    localStorage.setItem('apartments', JSON.stringify(this.apartments.value));
   }
 
-  addApartment(apartment: Apartment): void {
-    const currentApartments = this.apartments.value;
-    const updatedApartments = [...currentApartments, apartment];
-    localStorage.setItem('apartments', JSON.stringify(updatedApartments));
-    this.apartments.next(updatedApartments);
+  updateApartment(apartment: Apartment) {
+    const current = this.apartments.value;
+    const updated = current.map(a => (a.apartNum === apartment.apartNum ? apartment : a));
+    this.apartments.next(updated);
+    localStorage.setItem('apartments', JSON.stringify(updated));
   }
 
-  updateApartment(apartment: Apartment): void {
-    const currentApartments = this.apartments.value;
-    const index = currentApartments.findIndex(a => a.apartNum === apartment.apartNum);
-    
-    if (index !== -1) {
-      const updatedApartments = [...currentApartments];
-      updatedApartments[index] = apartment;
-      localStorage.setItem('apartments', JSON.stringify(updatedApartments));
-      this.apartments.next(updatedApartments);
-    }
+  deleteApartment(apartNum: number) {
+    const updated = this.apartments.value.filter(a => a.apartNum !== apartNum);
+    this.apartments.next(updated);
+    localStorage.setItem('apartments', JSON.stringify(updated));
   }
 
-  deleteApartment(apartNum: number): void {
-    const updatedApartments = this.apartments.value.filter(a => a.apartNum !== apartNum);
-    localStorage.setItem('apartments', JSON.stringify(updatedApartments));
-    this.apartments.next(updatedApartments);
-  }
-
-  deleteApartmentsByResidence(residenceId: number): void {
-    const updatedApartments = this.apartments.value.filter(a => a.residence !== residenceId);
-    localStorage.setItem('apartments', JSON.stringify(updatedApartments));
-    this.apartments.next(updatedApartments);
+  deleteApartmentsByResidence(residenceId: number) {
+    const updated = this.apartments.value.filter(a => a.residence !== residenceId);
+    this.apartments.next(updated);
+    localStorage.setItem('apartments', JSON.stringify(updated));
   }
 } 

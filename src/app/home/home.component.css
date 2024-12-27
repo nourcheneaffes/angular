@@ -26,3 +26,7 @@
 .btn-sm {
   flex: 1;
 }
+
+.card img {
+  transition: transform 0.3s ease;
+}
